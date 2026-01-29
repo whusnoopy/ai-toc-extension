@@ -1,0 +1,110 @@
+/* 变量保持不变 */
+:root {
+  --toc-bg-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.70) 100%);
+  --toc-border-color: #FFFFFF;
+  --toc-header-border: rgba(0, 0, 0, 0.08); 
+  --toc-radius: 12px;
+  --toc-text: #1f1f1f;
+  --toc-hover: rgba(0, 0, 0, 0.04);
+  --toc-active-bg: rgba(0, 0, 0, 0.08);
+  --toc-accent: #10a37f;
+}
+
+@media (prefers-color-scheme: dark), [data-theme='dark'], .dark {
+  :root {
+    --toc-bg-gradient: linear-gradient(180deg, rgba(40, 40, 40, 0.45) 0%, rgba(40, 40, 40, 0.75) 100%);
+    --toc-border-color: rgba(255, 255, 255, 0.2);
+    --toc-header-border: rgba(255, 255, 255, 0.12);
+    --toc-text: #ececec;
+    --toc-hover: rgba(255, 255, 255, 0.06);
+    --toc-active-bg: rgba(255, 255, 255, 0.15);
+  }
+}
+
+#ai-toc-root {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  width: 240px;
+  /* 增加动画过渡 */
+  transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              right 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              top 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              max-height 0.3s ease-in-out;
+  
+  max-height: 75vh; 
+  z-index: 2147483647;
+  background: var(--toc-bg-gradient) !important;
+  border: 1px solid var(--toc-border-color) !important;
+  border-radius: var(--toc-radius) !important;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  color: var(--toc-text);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* 折叠后的状态：高度缩减到 Header 的高度 */
+#ai-toc-root.collapsed {
+  max-height: 40px !important;
+}
+
+.ai-toc-header {
+  height: 40px;
+  min-height: 40px; /* 确保折叠后高度稳定 */
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--toc-header-border) !important;
+  background: transparent;
+  cursor: move;
+}
+
+/* 折叠按钮样式 */
+#ai-toc-toggle-btn {
+  background: none; border: none; cursor: pointer; color: var(--toc-text);
+  padding: 4px; border-radius: 4px; display: flex; transition: transform 0.3s; opacity: 0.5;
+}
+#ai-toc-toggle-btn:hover { background: var(--toc-hover); opacity: 1; }
+
+/* 折叠时旋转图标 */
+.collapsed #ai-toc-toggle-btn {
+  transform: rotate(-90deg);
+}
+
+.ai-toc-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  opacity: 0.6; letter-spacing: 0.8px; flex: 1; margin-left: 6px;
+}
+
+.ai-toc-actions { display: flex; align-items: center; gap: 2px; }
+
+#ai-toc-refresh-btn {
+  background: none; border: none; cursor: pointer; color: var(--toc-text);
+  padding: 4px; border-radius: 4px; display: flex; transition: all 0.2s; opacity: 0.5;
+}
+#ai-toc-refresh-btn:hover { background: var(--toc-hover); opacity: 1; }
+
+.ai-toc-content { overflow-y: auto; padding: 4px 0; flex: 1; }
+
+/* 内容折叠时隐藏 */
+.collapsed .ai-toc-content {
+  display: none;
+}
+
+.ai-toc-item {
+  margin: 2px 6px; padding: 8px 10px; font-size: 13px; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  border-radius: 4px; transition: background 0.2s; color: var(--toc-text); opacity: 0.8;
+}
+.ai-toc-item:hover { background: var(--toc-hover); opacity: 1; }
+.ai-toc-item.active { background: var(--toc-active-bg) !important; font-weight: 500; opacity: 1; }
+.ai-toc-item.level-3 { padding-left: 22px; font-size: 12px; opacity: 0.6; }
+.ai-toc-dragging .ai-toc-content { pointer-events: none; }
+.ai-toc-content::-webkit-scrollbar { width: 3px; }
+.ai-toc-content::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }

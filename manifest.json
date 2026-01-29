@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "AI Chat TOC Pro",
+  "version": "2.5.0",
+  "description": "具有精致渐变与高斯模糊的可拖拽 AI 聊天目录",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://gemini.google.com/*",
+        "https://claude.ai/*"
+      ],
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
