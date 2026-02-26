@@ -60,7 +60,7 @@
     const rect = root.getBoundingClientRect();
     const centerX = xPos + rect.width / 2;
     root.classList.add('ai-toc-snap-transition');
-    
+
     let config = JSON.parse(localStorage.getItem('ai-toc-pos') || '{}');
     if (centerX < windowWidth / 2) {
       root.style.left = '20px'; root.style.right = 'auto';
@@ -106,7 +106,7 @@
     if (document.getElementById(ROOT_ID)) return;
     const root = document.createElement('div');
     root.id = ROOT_ID;
-    
+
     const savedConfig = JSON.parse(localStorage.getItem('ai-toc-pos') || '{}');
     if (savedConfig.top) root.style.top = savedConfig.top;
     if (savedConfig.side === 'left') { root.style.left = '20px'; root.style.right = 'auto'; }
@@ -121,7 +121,7 @@
             <path d="M1 4L7 10L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        
+
         <div class="ai-toc-brand-icon">
           <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M113 18V101.5C113 110.61 105.61 118 96.5 118H37V18H113Z" fill="url(#ai-p0)"/>
@@ -141,9 +141,9 @@
             </defs>
           </svg>
         </div>
-        
+
         <span class="ai-toc-title">Navigation</span>
-        
+
         <div class="ai-toc-actions">
           <button id="ai-toc-refresh-btn" title="手动刷新">
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
