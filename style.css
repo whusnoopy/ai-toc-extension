@@ -10,7 +10,7 @@
   --toc-accent: #10a37f;
 }
 
-@media (prefers-color-scheme: dark), [data-theme='dark'], .dark {
+@media (prefers-color-scheme: dark) {
   :root {
     --toc-bg-gradient: linear-gradient(180deg, rgba(40, 40, 40, 0.45) 0%, rgba(40, 40, 40, 0.75) 100%);
     --toc-border-color: rgba(255, 255, 255, 0.2);
@@ -19,6 +19,16 @@
     --toc-hover: rgba(255, 255, 255, 0.06);
     --toc-active-bg: rgba(255, 255, 255, 0.15);
   }
+}
+
+[data-theme='dark'] :root,
+.dark :root {
+  --toc-bg-gradient: linear-gradient(180deg, rgba(40, 40, 40, 0.45) 0%, rgba(40, 40, 40, 0.75) 100%);
+  --toc-border-color: rgba(255, 255, 255, 0.2);
+  --toc-header-border: rgba(255, 255, 255, 0.12);
+  --toc-text: #ececec;
+  --toc-hover: rgba(255, 255, 255, 0.06);
+  --toc-active-bg: rgba(255, 255, 255, 0.15);
 }
 
 #ai-toc-root {
