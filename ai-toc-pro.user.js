@@ -1,39 +1,25 @@
 // ==UserScript==
 // @name         AI Chat TOC Pro
-// @namespace    https://leongao.com
+// @namespace    https://leongao.com/
+// @downloadURL  https://github.com/leongao/ai-toc-extension/raw/refs/heads/main/ai-toc-pro.user.js
 // @version      2.6.0
 // @description  具有精致 UI 和渐变图标的 AI 聊天目录导航
+// @author       leongao
 // @match        https://chatgpt.com/*
 // @match        https://chat.openai.com/*
 // @match        https://gemini.google.com/*
 // @match        https://claude.ai/*
-// @grant        none
+// @grant        GM_addStyle
 // @run-at       document-idle
 // ==/UserScript==
 
-(function() {
-    'use strict';
-    
-    // --- Trusted Types Policy ---
-    let policy = null;
-    if (window.trustedTypes && trustedTypes.createPolicy) {
-        try {
-            policy = trustedTypes.createPolicy('ai-toc-policy', {
-                createHTML: (string, sink) => string
-            });
-        } catch (e) {
-            console.warn('TrustedTypes policy creation failed', e);
-        }
-    }
-    const safeHTML = (html) => policy ? policy.createHTML(html) : html;
 
-    // --- 注入样式 ---
-    const css = `
+GM_addStyle(`
 /* 变量保持不变 */
 :root {
   --toc-bg-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.70) 100%);
   --toc-border-color: #FFFFFF;
-  --toc-header-border: rgba(0, 0, 0, 0.08); 
+  --toc-header-border: rgba(0, 0, 0, 0.08);
   --toc-radius: 12px;
   --toc-text: #1f1f1f;
   --toc-hover: rgba(0, 0, 0, 0.04);
@@ -68,12 +54,12 @@
   right: 20px;
   width: 240px;
   /* 增加动画过渡 */
-  transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
-              right 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+  transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              right 0.4s cubic-bezier(0.25, 1, 0.5, 1),
               top 0.4s cubic-bezier(0.25, 1, 0.5, 1),
               max-height 0.3s ease-in-out;
-  
-  max-height: 75vh; 
+
+  max-height: 75vh;
   z-index: 2147483647;
   background: var(--toc-bg-gradient) !important;
   border: 1px solid var(--toc-border-color) !important;
@@ -149,12 +135,28 @@
 .ai-toc-dragging .ai-toc-content { pointer-events: none; }
 .ai-toc-content::-webkit-scrollbar { width: 3px; }
 .ai-toc-content::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
-    `;
-    const styleElement = document.createElement('style');
-    styleElement.textContent = css;
-    document.head.appendChild(styleElement);
-    
-    // --- 原始脚本 ---
+`);
+
+(function() {
+
+  // 注入 safeHTML 转化逻辑 (兼容 Trusted Types)
+  const safeHTML = (html) => {
+    if (typeof trustedTypes !== 'undefined' && trustedTypes.createPolicy) {
+      if (!window.aiTocSafePolicy) {
+        try {
+          window.aiTocSafePolicy = trustedTypes.createPolicy('aiTocSafePolicy', {
+            createHTML: (string) => string
+          });
+        } catch (e) {
+          // 在由于策略重名等导致的异常时降级
+          return html;
+        }
+      }
+      return window.aiTocSafePolicy.createHTML(html);
+    }
+    return html;
+  };
+
   const ROOT_ID = 'ai-toc-root';
   const CONTENT_ID = 'ai-toc-content';
   let tocData = [];
@@ -216,7 +218,7 @@
     const rect = root.getBoundingClientRect();
     const centerX = xPos + rect.width / 2;
     root.classList.add('ai-toc-snap-transition');
-    
+
     let config = JSON.parse(localStorage.getItem('ai-toc-pos') || '{}');
     if (centerX < windowWidth / 2) {
       root.style.left = '20px'; root.style.right = 'auto';
@@ -262,7 +264,7 @@
     if (document.getElementById(ROOT_ID)) return;
     const root = document.createElement('div');
     root.id = ROOT_ID;
-    
+
     const savedConfig = JSON.parse(localStorage.getItem('ai-toc-pos') || '{}');
     if (savedConfig.top) root.style.top = savedConfig.top;
     if (savedConfig.side === 'left') { root.style.left = '20px'; root.style.right = 'auto'; }
@@ -277,7 +279,7 @@
             <path d="M1 4L7 10L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        
+
         <div class="ai-toc-brand-icon">
           <svg width="18" height="18" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M113 18V101.5C113 110.61 105.61 118 96.5 118H37V18H113Z" fill="url(#ai-p0)"/>
@@ -297,9 +299,9 @@
             </defs>
           </svg>
         </div>
-        
+
         <span class="ai-toc-title">Navigation</span>
-        
+
         <div class="ai-toc-actions">
           <button id="ai-toc-refresh-btn" title="手动刷新">
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
