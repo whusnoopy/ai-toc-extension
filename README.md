@@ -60,7 +60,6 @@ ai-toc-extension/
 ## 📋 版本信息
 
 - **当前版本** - v2.6.0
-- **最后更新** - 2024年
 
 ## 🤝 贡献
 
@@ -72,4 +71,4 @@ ai-toc-extension/
 
 ---
 
-**开发者** - AI Vibe Coding
+**开发者** - AI Vibe Coding and Leon Gao
